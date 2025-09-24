@@ -1,21 +1,22 @@
-inputs { query,page? }
+inputs { gene, page? }
 
-GET https://www.biorxiv.org/search/$[query]?page=$[page]
+GET https://www.biorxiv.org/search/:gene
+[query]
+page: $page
 
 extract {
   papers: {
-    items: => .highwire-article-citation -> @Paper({
-      @link: .highwire-cite-linked-title
-      gene: `APOL1`
-      title: .highwire-cite-title
-      authors: .highwire-cite-authors -> .nlm-given-names, .nlm-surname
-      doi: .highwire-cite-metadata-doi -> xpath:@href
-      date: .highwire-cite-metadata-pages -> `.`, `v`
-      biorxiv: .highwire-cite-metadata-pages -> `bioRxiv `, `v`
+    items: => li.search-result -> @Paper({
+      @link: a
+      title: a
+      authors: => .highwire-citation-author
+      biorxiv: .highwire-cite-metadata-pages
+      doi: //span[@class='doi_label']/following-sibling::text()
     })
-
+    total: h1 -> `parseInt($)`
     pager: {
-      next: .pager-next a
+      next: @Search) li.pager-next a
+      prev: @Search) li.pager-previous a
     }
   }
 }
