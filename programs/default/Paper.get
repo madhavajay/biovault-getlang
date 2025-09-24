@@ -1,5 +1,7 @@
-inputs { url }
+inputs { slug }
 
-GET $[url]
+GET https://www.biorxiv.org/content/$slug
 
-extract {}
+extract {
+  date: .pane-1
+}

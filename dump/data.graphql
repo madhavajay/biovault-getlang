@@ -1,0 +1,63 @@
+directive @pager on FIELD_DEFINITION
+
+type Query {
+  search(gene: String!): Search
+  paper(slug: String!): Paper
+}
+
+type Search {
+  url: String
+  gene: String
+  papers(filter: Paper_Filter, first: Int, pages: Int): [Paper] @pager
+}
+
+type Paper {
+  slug: String
+  title: String
+  authors(filter: String_Filter, first: Int): [String]
+  doi: String
+  biorxiv: String
+  date: String
+}
+
+input Paper_Filter {
+  slug: String_Filter
+  title: String_Filter
+  authors: String_List_Filter
+  doi: String_Filter
+  biorxiv: String_Filter
+  date: String_Filter
+  AND: [Paper_Filter]
+  OR: [Paper_Filter]
+  NOT: Paper_Filter
+}
+
+input String_Filter {
+  eq: String
+  match: String
+  in: [String]
+  AND: [String_Filter]
+  OR: [String_Filter]
+  NOT: String_Filter
+}
+
+input String_List_Filter {
+  any: String_Filter
+  all: String_Filter
+  count: Int_Filter
+  AND: [String_List_Filter]
+  OR: [String_List_Filter]
+  NOT: String_List_Filter
+}
+
+input Int_Filter {
+  eq: Int
+  gt: Int
+  gte: Int
+  lt: Int
+  lte: Int
+  in: [Int]
+  AND: [Int_Filter]
+  OR: [Int_Filter]
+  NOT: Int_Filter
+}

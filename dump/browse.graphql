@@ -1,0 +1,38 @@
+type Query {
+  search(gene: String!): Search
+  paper(slug: String!): Paper
+}
+
+type Search {
+  url: String
+  gene: String
+  papers(after: String, first: Int, before: String, last: Int): Search_Paper_Connection
+}
+
+type Search_Paper_Connection {
+  edges: [Search_Paper_Edge]
+  nodes: [Paper]
+  total: Int
+  pageInfo: Page_Info!
+}
+
+type Search_Paper_Edge {
+  node: Paper
+  cursor: String!
+}
+
+type Paper {
+  slug: String
+  title: String
+  authors: [String]
+  doi: String
+  biorxiv: String
+  date: String
+}
+
+type Page_Info {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
