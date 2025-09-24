@@ -1,14 +1,14 @@
 type Search {
   url: ProgramUrl
+  gene: String @key
   papers: [Paper] @pager
 }
 
 type Paper {
-  url: ProgramUrl @key
-  gene: String
+  slug: String @key
   title: String
   authors: [String]
   doi: String
-  date: String
   biorxiv: String
+  date: String
 }
