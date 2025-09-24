@@ -5,6 +5,7 @@ type Search {
 }
 
 type Paper {
+  url: ProgramUrl
   slug: String @key
   title: String
   authors: [String]
