@@ -1,0 +1,14 @@
+type Search {
+  url: ProgramUrl
+  papers: [Paper] @pager
+}
+
+type Paper {
+  url: ProgramUrl @key
+  gene: String
+  title: String
+  authors: [String]
+  doi: String
+  date: String
+  biorxiv: String
+}

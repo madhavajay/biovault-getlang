@@ -1,0 +1,21 @@
+inputs { query,page? }
+
+GET https://www.biorxiv.org/search/$[query]?page=$[page]
+
+extract {
+  papers: {
+    items: => .highwire-article-citation -> @Paper({
+      @link: .highwire-cite-linked-title
+      gene: `APOL1`
+      title: .highwire-cite-title
+      authors: .highwire-cite-authors -> .nlm-given-names, .nlm-surname
+      doi: .highwire-cite-metadata-doi -> xpath:@href
+      date: .highwire-cite-metadata-pages -> `.`, `v`
+      biorxiv: .highwire-cite-metadata-pages -> `bioRxiv `, `v`
+    })
+
+    pager: {
+      next: .pager-next a
+    }
+  }
+}
