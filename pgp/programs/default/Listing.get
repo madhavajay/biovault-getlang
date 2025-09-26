@@ -1,0 +1,31 @@
+inputs {}
+
+GET https://my.pgp-hms.org/public_genetic_data
+
+extract {
+  url: ProgramUrl
+
+  rows: => table tbody tr[data-file-row] -> @ProfileListingRow({
+    participant_id: => xpath:./@data-participant-id
+    locator: => xpath:./@data-locator
+    index_in_manifest?: => xpath:./@data-index-in-manifest
+    file_size_bytes?: => xpath:./@data-file-size
+
+    profile?: td:nth-child(2) a -> xpath:@href
+
+    date?: td:nth-child(3)
+    data_type?: td:nth-child(4)
+    source?: td:nth-child(5)
+
+    # Human-readable size like "(379 MB)" in downloads cell
+    size?: td:nth-child(7) -> br ~ `(`, `)`
+
+    # Downloads cell: full text + all hrefs
+    downloads_text?: td:nth-child(7)
+    downloads_links?: td:nth-child(7) a -> xpath:@href
+
+    # Reports cell: full text + all hrefs
+    reports_text?: td:nth-child(8)
+    reports_links?: td:nth-child(8) a -> xpath:@href
+  })
+}

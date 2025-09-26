@@ -1,0 +1,54 @@
+type PublicGeneticData {
+  url: ProgramUrl
+  rows: [ProfileListingRow]
+}
+
+type ProfileListingRow {
+  # From <tr data-*>
+  participant_id: String
+  locator: String
+  index_in_manifest: String?
+  file_size_bytes: String?
+
+  # Visible columns (optional)
+  profile: ProgramUrl?
+  date: String?
+  data_type: String?
+  source: String?
+  size: String?
+
+  # Downloads cell (td:nth-child(7))
+  downloads_text: String?
+  downloads_links: [String]?
+
+  # Reports cell (td:nth-child(8))
+  reports_text: String?
+  reports_links: [String]?
+}
+
+type Profile {
+  url: ProgramUrl @key
+  id: String
+  name: String?
+  state: String?
+  zipcode: String?
+  uploads: [UploadRow]?
+}
+
+type UploadRow {
+  date: String?
+  data_type: String?
+  source: String?
+  name: String?
+  size: String?
+
+  # Downloads cell (td:nth-child(6))
+  downloads_text: String?
+  downloads_links: [String]?
+
+  # Reports cell (td:nth-child(7))
+  reports_text: String?
+  reports_links: [String]?
+
+  details: String?
+}

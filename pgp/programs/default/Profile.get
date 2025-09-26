@@ -1,0 +1,36 @@
+inputs { id }
+
+GET https://my.pgp-hms.org/profile/$[id]
+
+extract {
+  profile: @Profile({
+    @link: head > link[rel="canonical"]
+    id: `{{id}}`
+
+    name?: => xpath://h3[normalize-space()='Real Name']/following-sibling::strong[1]
+
+    state?: => xpath://h3[normalize-space()='Geographic Information']/following-sibling::table[1]//tr[td[1][normalize-space()='State:']]/td[2]
+    zipcode?: => xpath://h3[normalize-space()='Geographic Information']/following-sibling::table[1]//tr[td[1][normalize-space()='Zip code:']]/td[2]
+
+    uploads?: => xpath://h3[translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='uploaded data']/following::table[1]//tbody/tr[@data-file-row] -> @UploadRow({
+      date?: td:nth-child(2)
+      data_type?: td:nth-child(3)
+      source?: td:nth-child(4)
+      name?: td:nth-child(5)
+
+      # Human-readable size like "(1.2 GB)"
+      size?: td:nth-child(6) -> br ~ `(`, `)`
+
+      # Downloads cell: full text + hrefs
+      downloads_text?: td:nth-child(6)
+      downloads_links?: td:nth-child(6) a -> xpath:@href
+
+      # Reports cell: full text + hrefs
+      reports_text?: td:nth-child(7)
+      reports_links?: td:nth-child(7) a -> xpath:@href
+
+      # Optional legacy catch-all (you can remove if not needed)
+      details?: td:nth-child(7)
+    })
+  })
+}
